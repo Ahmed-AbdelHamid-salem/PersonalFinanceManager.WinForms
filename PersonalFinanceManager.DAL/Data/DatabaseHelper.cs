@@ -6,24 +6,27 @@ using System.IO;
 
 namespace PersonalFinanceManager.DAL.Data
 {
-    public static class DatabaseHelper
+    public class DatabaseHelper
     {
-        private static readonly string _dbFile = "finance.db";
-        private static readonly string _connectionString = $"Data Source={_dbFile};Version=3;";
+        private readonly string _dbFile;
+        private readonly string _connectionString;
 
-        static DatabaseHelper()
+        public DatabaseHelper()
         {
+            _dbFile = "finance.db";
+            _connectionString = $"Data Source={_dbFile};Version=3;";
+
             if (!File.Exists(_dbFile))
                 SQLiteConnection.CreateFile(_dbFile);
         }
 
-        public static SQLiteConnection GetConnection()
+        public SQLiteConnection GetConnection()
         {
             return new SQLiteConnection(_connectionString);
         }
 
         #region ExecuteNonQuery
-        public static int ExecuteNonQuery(string query, SQLiteParameter[] parameters = null)
+        public int ExecuteNonQuery(string query, SQLiteParameter[] parameters = null)
         {
             try
             {
@@ -46,7 +49,7 @@ namespace PersonalFinanceManager.DAL.Data
         #endregion
 
         #region ExecuteScalar
-        public static object ExecuteScalar(string query, SQLiteParameter[] parameters = null)
+        public object ExecuteScalar(string query, SQLiteParameter[] parameters = null)
         {
             try
             {
@@ -69,7 +72,7 @@ namespace PersonalFinanceManager.DAL.Data
         #endregion
 
         #region GetTable
-        public static DataTable GetTable(string query, SQLiteParameter[] parameters = null)
+        public DataTable GetTable(string query, SQLiteParameter[] parameters = null)
         {
             try
             {
@@ -96,7 +99,7 @@ namespace PersonalFinanceManager.DAL.Data
         #endregion
 
         #region TableHasRows
-        public static bool TableHasRows(string query, SQLiteParameter[] parameters = null)
+        public bool TableHasRows(string query, SQLiteParameter[] parameters = null)
         {
             DataTable dt = GetTable(query, parameters);
             return dt.Rows.Count > 0;

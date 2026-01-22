@@ -6,14 +6,21 @@ namespace PersonalFinanceManager.DAL.Data
 {
     public class DatabaseInitializer
     {
-        public static void Initialize()
+        private readonly DatabaseHelper _database;
+
+        public DatabaseInitializer() {
+
+            _database = new DatabaseHelper();
+        }
+
+        public void Initialize()
         {
             CreateTables();
             SeedData();
         }
 
         #region Create Tables
-        private static void CreateTables()
+        private void CreateTables()
         {
             string usersTable = @"
                 CREATE TABLE IF NOT EXISTS Tbl_Users (
@@ -52,15 +59,15 @@ namespace PersonalFinanceManager.DAL.Data
                     FOREIGN KEY(CreatedByUserID) REFERENCES Tbl_Users(UserID)
                 );";
 
-            DatabaseHelper.ExecuteNonQuery(usersTable);
-            DatabaseHelper.ExecuteNonQuery(transactionTypesTable);
-            DatabaseHelper.ExecuteNonQuery(categoriesTable);
-            DatabaseHelper.ExecuteNonQuery(transactionsTable);
+            _database.ExecuteNonQuery(usersTable);
+            _database.ExecuteNonQuery(transactionTypesTable);
+            _database.ExecuteNonQuery(categoriesTable);
+            _database.ExecuteNonQuery(transactionsTable);
         }
         #endregion
 
         #region Seed Data
-        private static void SeedData()
+        private void SeedData()
         {
             SeedTransactionTypes();
             SeedAdminUser();
@@ -68,7 +75,7 @@ namespace PersonalFinanceManager.DAL.Data
         #endregion
 
         #region Seed Transaction Types
-        private static void SeedTransactionTypes()
+        private void SeedTransactionTypes()
         {
             string seedTypes = @"
                 INSERT OR IGNORE INTO Tbl_TransactionTypes
@@ -77,19 +84,19 @@ namespace PersonalFinanceManager.DAL.Data
                 (1, 'Income'),
                 (2, 'Expense');";
 
-            DatabaseHelper.ExecuteNonQuery(seedTypes);
+            _database.ExecuteNonQuery(seedTypes);
         }
         #endregion
 
         #region Seed Admin User
-        private static void SeedAdminUser()
+        private void SeedAdminUser()
         {
             string checkAdminQuery = @"
                 SELECT COUNT(*)
                 FROM Tbl_Users
                 WHERE Username = 'admin';";
 
-            object result = DatabaseHelper.ExecuteScalar(checkAdminQuery);
+            object result = _database.ExecuteScalar(checkAdminQuery);
 
             if (Convert.ToInt32(result) > 0)
                 return; // Admin already exists
@@ -111,7 +118,7 @@ namespace PersonalFinanceManager.DAL.Data
                     DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
             };
 
-            DatabaseHelper.ExecuteNonQuery(insertAdminQuery, parameters);
+            _database.ExecuteNonQuery(insertAdminQuery, parameters);
         }
         #endregion
     }
