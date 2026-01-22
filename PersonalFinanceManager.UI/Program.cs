@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using PersonalFinanceManager.BLL;
+using System;
 using System.Windows.Forms;
 
 namespace PersonalFinanceManager.UI
@@ -16,6 +14,10 @@ namespace PersonalFinanceManager.UI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // تهيئة قاعدة البيانات قبل تشغيل التطبيق
+            StartupService.InitializeApplication();
+
             Application.Run(new Form1());
         }
     }
